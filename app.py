@@ -6,7 +6,7 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
-from flask import Flask,josnify
+from flask import Flask, jsonify
 
 
 engine = create_engine("sqlite:///Resources/hawaii.sqlite", echo=False)
@@ -31,13 +31,6 @@ def home():
         f"/api/v1.0/start/end"
 
 
-@app.route("/api/v1.0/precipitation")
-def prcp():
-    recent_prcp = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= '2016-08-23').\
-    filter(Measurement.date <= '2017-08-23').\
-    order_by(Measurement.date).all()
-    prcpt_dict = dict(recent_prcp)
-    return jsonify(prcp_dict)
 
 @app.route("/api/v1.0/stations")
 def stations():
@@ -60,7 +53,7 @@ return jsonify(start_only)
 @app.route("/api/v1.0/<start>/<end>")
 def start_end(start=None, end=None):
 start_end = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date >= start).filter(Measurement.date <= end).group_by(Measurement.date).all()
-return jsonify(start_and_end)
+return jsonify(start_end)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
