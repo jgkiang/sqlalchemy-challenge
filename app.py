@@ -30,7 +30,13 @@ def home():
         f"/api/v1.0/start<br>"
         f"/api/v1.0/start/end"
 
-
+@app.route("/api/v1.0/precipitation")
+def prcp():
+    recent_prcp = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date >= '2016-08-23').\
+    filter(Measurement.date <= '2017-08-23').\
+    order_by(Measurement.date).all()
+    prcp_dict = dict(recent_prcp)
+    return jsonify(prcp_dict)
 
 @app.route("/api/v1.0/stations")
 def stations():
